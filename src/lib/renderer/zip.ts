@@ -1,5 +1,7 @@
 import { Readable } from 'stream'
-import archiver from 'archiver'
+import { createRequire } from 'module'
+const _require = createRequire(import.meta.url)
+const archiver = _require('archiver') as typeof import('archiver')
 
 interface ZipEntry {
   name: string
