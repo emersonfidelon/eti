@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
+    "postinstall": "playwright install chromium --with-deps",
     "start": "next start",
     "worker": "playwright install chromium --with-deps && tsx worker.ts",
     "test": "vitest run",
