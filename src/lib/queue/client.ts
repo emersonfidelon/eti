@@ -2,7 +2,7 @@ import { Queue } from 'bullmq'
 import Redis from 'ioredis'
 
 // BullMQ requires maxRetriesPerRequest: null for blocking commands
-const queueRedis = new Redis(process.env.REDIS_URL!, {
+export const queueRedis = new Redis(process.env.REDIS_URL!, {
   maxRetriesPerRequest: null,
   enableReadyCheck: false
 })
