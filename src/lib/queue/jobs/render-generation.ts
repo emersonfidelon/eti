@@ -40,7 +40,7 @@ export async function processRenderJob(job: Job<RenderJobData>): Promise<void> {
     let zipUrl: string | undefined
 
     if (generation.contentType === 'carousel') {
-      const zipBuffer = await createZip(
+      const zipBuffer = createZip(
         renderedSlides.map((s) => ({
           name: `slide-${s.position}.png`,
           buffer: s.buffer

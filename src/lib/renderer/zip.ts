@@ -1,26 +1,14 @@
-import { Readable } from 'stream'
-import { createRequire } from 'module'
-const _require = createRequire(import.meta.url)
-const archiver = _require('archiver') as typeof import('archiver')
+import AdmZip from 'adm-zip'
 
 interface ZipEntry {
   name: string
   buffer: Buffer
 }
 
-export async function createZip(entries: ZipEntry[]): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    const chunks: Buffer[] = []
-    const archive = archiver('zip', { zlib: { level: 6 } })
-
-    archive.on('data', (chunk: Buffer) => chunks.push(chunk))
-    archive.on('end', () => resolve(Buffer.concat(chunks)))
-    archive.on('error', reject)
-
-    for (const entry of entries) {
-      archive.append(Readable.from(entry.buffer), { name: entry.name })
-    }
-
-    archive.finalize()
-  })
+export function createZip(entries: ZipEntry[]): Buffer {
+  const zip = new AdmZip()
+  for (const entry of entries) {
+    zip.addFile(entry.name, entry.buffer)
+  }
+  return zip.toBuffer()
 }
