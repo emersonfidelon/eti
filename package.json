@@ -5,17 +5,40 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "worker": "tsx worker.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1048.0",
+    "@prisma/client": "^7.8.0",
+    "archiver": "^8.0.0",
+    "bullmq": "^5.76.10",
+    "dotenv": "^17.4.2",
+    "file-type": "^22.0.1",
+    "ioredis": "^5.10.1",
     "next": "16.2.6",
+    "playwright": "^1.60.0",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "resend": "^6.12.3",
+    "sanitize-html": "^2.17.4",
+    "uuid": "^14.0.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@types/archiver": "^7.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "typescript": "^5"
+    "@types/sanitize-html": "^2.16.1",
+    "@types/uuid": "^11.0.0",
+    "@vitest/coverage-v8": "^4.1.6",
+    "prisma": "^7.8.0",
+    "tsx": "^4.22.2",
+    "typescript": "^5",
+    "vite-tsconfig-paths": "^6.1.1",
+    "vitest": "^4.1.6"
   }
 }
