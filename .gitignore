@@ -46,4 +46,5 @@ next-env.d.ts
 .worktrees/
 worktrees/
 
-/generated/prisma
+/src/generated/
+*.log
