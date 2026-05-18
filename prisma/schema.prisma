@@ -1,0 +1,144 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserStatus {
+  active
+  inactive
+}
+
+enum CustomerStatus {
+  active
+  inactive
+}
+
+enum ContentType {
+  post
+  carousel
+}
+
+enum GenerationStatus {
+  pending
+  processing
+  completed
+  failed
+}
+
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  name      String?
+  status    UserStatus @default(active)
+  createdAt DateTime   @default(now()) @map("created_at")
+
+  authCodes AuthCode[]
+  tokens    UserToken[]
+  customer  Customer?
+
+  @@map("users")
+}
+
+model AuthCode {
+  id        String    @id @default(uuid())
+  userId    String    @map("user_id")
+  code      String    @db.VarChar(6)
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+
+  user      User      @relation(fields: [userId], references: [id])
+
+  @@map("auth_codes")
+}
+
+model UserToken {
+  id         String    @id @default(uuid())
+  userId     String    @map("user_id")
+  token      String    @unique @default(uuid())
+  createdAt  DateTime  @default(now()) @map("created_at")
+  lastUsedAt DateTime? @map("last_used_at")
+
+  user       User      @relation(fields: [userId], references: [id])
+
+  @@map("user_tokens")
+}
+
+model Customer {
+  id        String         @id @default(uuid())
+  userId    String         @unique @map("user_id")
+  name      String?
+  segment   String?
+  status    CustomerStatus @default(active)
+  createdAt DateTime       @default(now()) @map("created_at")
+
+  user           User            @relation(fields: [userId], references: [id])
+  visualIdentity VisualIdentity?
+  generations    Generation[]
+  assets         Asset[]
+
+  @@map("customers")
+}
+
+model VisualIdentity {
+  id             String   @id @default(uuid())
+  customerId     String   @unique @map("customer_id")
+  logoUrl        String?  @map("logo_url")
+  primaryColor   String?  @map("primary_color") @db.VarChar(7)
+  secondaryColor String?  @map("secondary_color") @db.VarChar(7)
+  typography     String?
+  visualStyle    String?  @map("visual_style")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  customer       Customer @relation(fields: [customerId], references: [id])
+
+  @@map("visual_identities")
+}
+
+model Generation {
+  id           String           @id @default(uuid())
+  customerId   String           @map("customer_id")
+  contentType  ContentType      @map("content_type")
+  sourceType   String           @map("source_type")
+  userInput    String?          @map("user_input")
+  status       GenerationStatus @default(pending)
+  previewUrl   String?          @map("preview_url")
+  zipUrl       String?          @map("zip_url")
+  errorMessage String?          @map("error_message")
+  createdAt    DateTime         @default(now()) @map("created_at")
+
+  customer     Customer         @relation(fields: [customerId], references: [id])
+  slides       Slide[]
+  assets       Asset[]
+
+  @@map("generations")
+}
+
+model Slide {
+  id           String     @id @default(uuid())
+  generationId String     @map("generation_id")
+  position     Int
+  html         String
+  pngUrl       String?    @map("png_url")
+  createdAt    DateTime   @default(now()) @map("created_at")
+
+  generation   Generation @relation(fields: [generationId], references: [id])
+
+  @@map("slides")
+}
+
+model Asset {
+  id           String      @id @default(uuid())
+  customerId   String      @map("customer_id")
+  generationId String?     @map("generation_id")
+  assetType    String      @map("asset_type")
+  url          String
+  createdAt    DateTime    @default(now()) @map("created_at")
+
+  customer     Customer    @relation(fields: [customerId], references: [id])
+  generation   Generation? @relation(fields: [generationId], references: [id])
+
+  @@map("assets")
+}
