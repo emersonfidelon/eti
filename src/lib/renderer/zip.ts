@@ -1,5 +1,5 @@
-import { ZipArchive } from 'archiver'
 import { Readable } from 'stream'
+import archiver from 'archiver'
 
 interface ZipEntry {
   name: string
@@ -9,7 +9,7 @@ interface ZipEntry {
 export async function createZip(entries: ZipEntry[]): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = []
-    const archive = new ZipArchive()
+    const archive = archiver('zip', { zlib: { level: 6 } })
 
     archive.on('data', (chunk: Buffer) => chunks.push(chunk))
     archive.on('end', () => resolve(Buffer.concat(chunks)))
