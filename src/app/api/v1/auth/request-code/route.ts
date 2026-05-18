@@ -27,7 +27,15 @@ export async function POST(req: NextRequest) {
     }
 
     const code = await createOtp(user.id)
-    await sendOtpEmail(email, code)
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`[DEV] OTP for ${email}: ${code}`)
+    }
+
+    await sendOtpEmail(email, code).catch((err) => {
+      if (process.env.NODE_ENV !== 'development') throw err
+      console.warn('[DEV] Resend skipped:', err.message)
+    })
 
     return NextResponse.json({ ok: true })
   })
