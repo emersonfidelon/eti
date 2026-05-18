@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "worker": "tsx worker.ts",
+    "worker": "playwright install chromium --with-deps && tsx worker.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
