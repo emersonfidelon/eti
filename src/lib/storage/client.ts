@@ -28,5 +28,5 @@ export async function uploadBuffer(
     })
   )
 
-  return `${process.env.STORAGE_PUBLIC_URL}/${process.env.STORAGE_BUCKET}/${key}`
+  return `${process.env.STORAGE_PUBLIC_URL}/${key}`
 }
