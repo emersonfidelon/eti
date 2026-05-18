@@ -37,7 +37,7 @@ export async function renderHtmlToPng(rawHtml: string): Promise<Buffer> {
       use: ['href', 'xlink:href']
     },
     allowedSchemes: ['https', 'http', 'data'],
-    allowVulnerableTags: false
+    allowVulnerableTags: true
   })
 
   const b = await getBrowser()

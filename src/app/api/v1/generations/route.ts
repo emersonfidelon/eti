@@ -19,7 +19,11 @@ const schema = z.object({
 })
 
 async function handler(ctx: AuthContext, req: NextRequest): Promise<NextResponse> {
-  const body = await req.json().catch(() => null)
+  const body = await req.json().catch((e: unknown) => {
+    console.error('[generations] req.json() failed:', e)
+    return null
+  })
+  console.log('[generations] body:', JSON.stringify(body))
   const parsed = schema.safeParse(body)
 
   if (!parsed.success) {

@@ -26,7 +26,7 @@ export async function processRenderJob(job: Job<RenderJobData>): Promise<void> {
 
     for (const slide of generation.slides) {
       const buffer = await renderHtmlToPng(slide.html)
-      const key = `generations/${generationId}/slide-${slide.position}.png`
+      const key = `${generationId}/slide-${slide.position}.png`
       const url = await uploadBuffer(buffer, key, 'image/png')
 
       await prisma.slide.update({
@@ -46,7 +46,7 @@ export async function processRenderJob(job: Job<RenderJobData>): Promise<void> {
           buffer: s.buffer
         }))
       )
-      const zipKey = `generations/${generationId}/slides.zip`
+      const zipKey = `${generationId}/slides.zip`
       zipUrl = await uploadBuffer(zipBuffer, zipKey, 'application/zip')
     }
 
