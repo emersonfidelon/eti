@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
     const dest = new URL(redirectUri)
     dest.searchParams.set('code', authCode)
     if (state) dest.searchParams.set('state', state)
-    return NextResponse.redirect(dest.toString())
+    return NextResponse.redirect(dest.toString(), { status: 302 })
   } catch {
     return page(`<h2>Erro</h2><p>redirect_uri inválido.</p>`)
   }

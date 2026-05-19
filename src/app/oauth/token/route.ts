@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({
     access_token: userToken,
-    token_type: 'bearer',
+    token_type: 'Bearer',
+    expires_in: 7776000,
   })
 }
