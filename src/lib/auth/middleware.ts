@@ -22,7 +22,7 @@ export async function withAuth(
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
 
-  const token = req.headers.get('x-user-token')
+  const token = req.headers.get('x-user-token') ?? req.nextUrl.searchParams.get('user_token')
   if (!token) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
