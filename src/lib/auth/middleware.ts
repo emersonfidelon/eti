@@ -17,12 +17,18 @@ export async function withAuth(
   req: NextRequest,
   handler: (ctx: AuthContext) => Promise<Response>
 ): Promise<Response> {
-  const apiKey = req.headers.get('x-api-key')
-  if (apiKey !== process.env.SERVICE_API_KEY) {
-    return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  const authHeader = req.headers.get('authorization')
+  const bearerToken = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
+
+  // OAuth Bearer flow skips x-api-key; direct API clients require it
+  if (!bearerToken) {
+    const apiKey = req.headers.get('x-api-key')
+    if (apiKey !== process.env.SERVICE_API_KEY) {
+      return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+    }
   }
 
-  const token = req.headers.get('x-user-token') ?? req.nextUrl.searchParams.get('user_token')
+  const token = bearerToken ?? req.headers.get('x-user-token') ?? req.nextUrl.searchParams.get('user_token')
   if (!token) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }

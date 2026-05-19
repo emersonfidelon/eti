@@ -6,14 +6,14 @@ export const openApiSpec = {
     description:
       'Headless API that receives HTML slides, renders them to PNG via Playwright, and returns preview URLs and ZIP downloads.',
   },
-  servers: [{ url: '/api/v1', description: 'Current server' }],
+  servers: [{ url: 'https://web-production-e8d5e.up.railway.app/api/v1', description: 'Production' }],
   components: {
     securitySchemes: {
-      ApiKey: {
-        type: 'apiKey',
-        in: 'header',
-        name: 'x-api-key',
-        description: 'Global service API key',
+      BearerAuth: {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'UUID',
+        description: 'User token from OAuth flow',
       },
     },
     schemas: {
@@ -87,7 +87,7 @@ export const openApiSpec = {
             },
           },
         },
-        security: [{ ApiKey: [] }],
+        security: [{ BearerAuth: [] }],
         responses: {
           '200': { description: 'Code sent (or silently ignored if email not found)' },
           '400': { description: 'Missing email', content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } } },
@@ -114,7 +114,7 @@ export const openApiSpec = {
             },
           },
         },
-        security: [{ ApiKey: [] }],
+        security: [{ BearerAuth: [] }],
         responses: {
           '200': {
             description: 'Valid code — returns user token',
@@ -137,10 +137,7 @@ export const openApiSpec = {
         tags: ['Generations'],
         summary: 'Create a new generation',
         description: 'Enqueues a render job. Returns immediately with status "pending". Rate limited to 10 req/min per user token.',
-        security: [{ ApiKey: [] }],
-        parameters: [
-          { name: 'user_token', in: 'query', required: true, schema: { type: 'string', format: 'uuid' }, description: 'User token from verify-code' },
-        ],
+        security: [{ BearerAuth: [] }],
         requestBody: {
           required: true,
           content: {
@@ -195,10 +192,9 @@ export const openApiSpec = {
         tags: ['Generations'],
         summary: 'Get generation status',
         description: 'Poll until status is "completed" or "failed".',
-        security: [{ ApiKey: [] }],
+        security: [{ BearerAuth: [] }],
         parameters: [
           { name: 'id', in: 'path', required: true, schema: { type: 'string', format: 'uuid' } },
-          { name: 'user_token', in: 'query', required: true, schema: { type: 'string', format: 'uuid' }, description: 'User token from verify-code' },
         ],
         responses: {
           '200': {
@@ -215,10 +211,7 @@ export const openApiSpec = {
         tags: ['Assets'],
         summary: 'Upload an asset',
         description: 'Upload an image or logo. Max 10MB. Real MIME type validated (not just extension).',
-        security: [{ ApiKey: [] }],
-        parameters: [
-          { name: 'user_token', in: 'query', required: true, schema: { type: 'string', format: 'uuid' }, description: 'User token from verify-code' },
-        ],
+        security: [{ BearerAuth: [] }],
         requestBody: {
           required: true,
           content: {
@@ -261,10 +254,7 @@ export const openApiSpec = {
       get: {
         tags: ['Customers'],
         summary: 'Get current customer profile',
-        security: [{ ApiKey: [] }],
-        parameters: [
-          { name: 'user_token', in: 'query', required: true, schema: { type: 'string', format: 'uuid' }, description: 'User token from verify-code' },
-        ],
+        security: [{ BearerAuth: [] }],
         responses: {
           '200': {
             description: 'Customer profile',
@@ -276,10 +266,7 @@ export const openApiSpec = {
       put: {
         tags: ['Customers'],
         summary: 'Update current customer profile',
-        security: [{ ApiKey: [] }],
-        parameters: [
-          { name: 'user_token', in: 'query', required: true, schema: { type: 'string', format: 'uuid' }, description: 'User token from verify-code' },
-        ],
+        security: [{ BearerAuth: [] }],
         requestBody: {
           required: true,
           content: {
@@ -308,10 +295,7 @@ export const openApiSpec = {
       get: {
         tags: ['Visual Identity'],
         summary: 'Get visual identity',
-        security: [{ ApiKey: [] }],
-        parameters: [
-          { name: 'user_token', in: 'query', required: true, schema: { type: 'string', format: 'uuid' }, description: 'User token from verify-code' },
-        ],
+        security: [{ BearerAuth: [] }],
         responses: {
           '200': {
             description: 'Visual identity data (null fields if not set)',
@@ -325,10 +309,7 @@ export const openApiSpec = {
         tags: ['Visual Identity'],
         summary: 'Save visual identity',
         description: 'Creates or updates visual identity (upsert). All fields optional.',
-        security: [{ ApiKey: [] }],
-        parameters: [
-          { name: 'user_token', in: 'query', required: true, schema: { type: 'string', format: 'uuid' }, description: 'User token from verify-code' },
-        ],
+        security: [{ BearerAuth: [] }],
         requestBody: {
           required: true,
           content: {
