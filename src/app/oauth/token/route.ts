@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     body = await req.json().catch(() => ({}))
   }
 
-  const { grant_type, code, client_secret } = body
+  const { grant_type, code } = body
 
   if (grant_type !== 'authorization_code') {
     return NextResponse.json({ error: 'unsupported_grant_type' }, { status: 400 })
@@ -20,10 +20,6 @@ export async function POST(req: NextRequest) {
 
   if (!code) {
     return NextResponse.json({ error: 'invalid_request' }, { status: 400 })
-  }
-
-  if (client_secret !== process.env.SERVICE_API_KEY) {
-    return NextResponse.json({ error: 'invalid_client' }, { status: 401 })
   }
 
   const userToken = await redis.get(`oauth:code:${code}`)
