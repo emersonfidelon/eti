@@ -15,12 +15,6 @@ export const openApiSpec = {
         name: 'x-api-key',
         description: 'Global service API key',
       },
-      UserToken: {
-        type: 'apiKey',
-        in: 'header',
-        name: 'x-user-token',
-        description: 'Per-user token obtained via OTP flow',
-      },
     },
     schemas: {
       Error: {
@@ -143,7 +137,10 @@ export const openApiSpec = {
         tags: ['Generations'],
         summary: 'Create a new generation',
         description: 'Enqueues a render job. Returns immediately with status "pending". Rate limited to 10 req/min per user token.',
-        security: [{ ApiKey: [], UserToken: [] }],
+        security: [{ ApiKey: [] }],
+        parameters: [
+          { name: 'x-user-token', in: 'header', required: true, schema: { type: 'string', format: 'uuid' }, description: 'User token from verify-code' },
+        ],
         requestBody: {
           required: true,
           content: {
@@ -198,9 +195,10 @@ export const openApiSpec = {
         tags: ['Generations'],
         summary: 'Get generation status',
         description: 'Poll until status is "completed" or "failed".',
-        security: [{ ApiKey: [], UserToken: [] }],
+        security: [{ ApiKey: [] }],
         parameters: [
           { name: 'id', in: 'path', required: true, schema: { type: 'string', format: 'uuid' } },
+          { name: 'x-user-token', in: 'header', required: true, schema: { type: 'string', format: 'uuid' }, description: 'User token from verify-code' },
         ],
         responses: {
           '200': {
@@ -217,7 +215,10 @@ export const openApiSpec = {
         tags: ['Assets'],
         summary: 'Upload an asset',
         description: 'Upload an image or logo. Max 10MB. Real MIME type validated (not just extension).',
-        security: [{ ApiKey: [], UserToken: [] }],
+        security: [{ ApiKey: [] }],
+        parameters: [
+          { name: 'x-user-token', in: 'header', required: true, schema: { type: 'string', format: 'uuid' }, description: 'User token from verify-code' },
+        ],
         requestBody: {
           required: true,
           content: {
@@ -260,7 +261,10 @@ export const openApiSpec = {
       get: {
         tags: ['Customers'],
         summary: 'Get current customer profile',
-        security: [{ ApiKey: [], UserToken: [] }],
+        security: [{ ApiKey: [] }],
+        parameters: [
+          { name: 'x-user-token', in: 'header', required: true, schema: { type: 'string', format: 'uuid' }, description: 'User token from verify-code' },
+        ],
         responses: {
           '200': {
             description: 'Customer profile',
@@ -272,7 +276,10 @@ export const openApiSpec = {
       put: {
         tags: ['Customers'],
         summary: 'Update current customer profile',
-        security: [{ ApiKey: [], UserToken: [] }],
+        security: [{ ApiKey: [] }],
+        parameters: [
+          { name: 'x-user-token', in: 'header', required: true, schema: { type: 'string', format: 'uuid' }, description: 'User token from verify-code' },
+        ],
         requestBody: {
           required: true,
           content: {
@@ -301,7 +308,10 @@ export const openApiSpec = {
       get: {
         tags: ['Visual Identity'],
         summary: 'Get visual identity',
-        security: [{ ApiKey: [], UserToken: [] }],
+        security: [{ ApiKey: [] }],
+        parameters: [
+          { name: 'x-user-token', in: 'header', required: true, schema: { type: 'string', format: 'uuid' }, description: 'User token from verify-code' },
+        ],
         responses: {
           '200': {
             description: 'Visual identity data (null fields if not set)',
@@ -315,7 +325,10 @@ export const openApiSpec = {
         tags: ['Visual Identity'],
         summary: 'Save visual identity',
         description: 'Creates or updates visual identity (upsert). All fields optional.',
-        security: [{ ApiKey: [], UserToken: [] }],
+        security: [{ ApiKey: [] }],
+        parameters: [
+          { name: 'x-user-token', in: 'header', required: true, schema: { type: 'string', format: 'uuid' }, description: 'User token from verify-code' },
+        ],
         requestBody: {
           required: true,
           content: {
